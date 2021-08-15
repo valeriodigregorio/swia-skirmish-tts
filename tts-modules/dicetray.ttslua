@@ -1,0 +1,59 @@
+-- -----------------------------------------------------------------------------
+-- Star Wars: Imperial Assault - Skirmish
+-- by Ikon
+-- -----------------------------------------------------------------------------
+
+local UTILS = require("swia-skirmish-tts/modules/common/utils")
+
+local DiceTray = require("swia-skirmish-tts/modules/dicetray/dice_tray")
+
+local Logger = require("swia-skirmish-tts/modules/common/logger")
+local logger = Logger:create("dicetray", "Blue"):setState(false)
+
+-- -----------------------------------------------------------------------------
+--  Globals
+-- -----------------------------------------------------------------------------
+
+local DiceTrays = {}
+
+-- -----------------------------------------------------------------------------
+--  Global Event
+-- -----------------------------------------------------------------------------
+
+function onLoad()
+  logger:debug({}, "onLoad")
+  for _, zone in pairs(getAllObjects()) do
+    if zone.tag == "Scripting" then
+      logger:debug({zone}, "onLoad")
+      for _, tray in ipairs(zone.getObjects() or {}) do
+        logger:debug({zone, tray}, "onLoad")
+        if tray.getGUID() == self.getGUID() then
+          local color = UTILS.safeGetName(tray):gsub(" Dice Tray", "")
+          local diceTray = DiceTray:create(color, tray, zone)
+          DiceTrays[zone.getGUID()] = diceTray
+          diceTray:updateResults()
+        end
+      end
+    end
+  end
+end
+
+function onObjectLeaveScriptingZone(zone, object)
+  logger:debug({zone, object}, "onObjectLeaveScriptingZone")
+  local diceTray = DiceTrays[zone.getGUID()]
+  if diceTray ~= nil then
+    Wait.frames(function()
+      diceTray:removeObject(object)
+    end, 1)
+  end
+end
+
+function onObjectEnterScriptingZone(zone, object)
+  logger:debug({zone, object}, "onObjectEnterScriptingZone")
+  local diceTray = DiceTrays[zone.getGUID()]
+  if diceTray ~= nil then
+    Wait.frames(function()
+      diceTray:addObject(object)
+    end, 1)
+  end
+end

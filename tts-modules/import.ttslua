@@ -1,0 +1,125 @@
+-- -----------------------------------------------------------------------------
+-- Star Wars: Imperial Assault - Skirmish
+-- by Ikon
+-- -----------------------------------------------------------------------------
+
+local DEFS = require("swia-skirmish-tts/modules/common/definitions")
+local TTA = require("swia-skirmish-tts/modules/import/ttadmiral")
+
+local Deck = require("swia-skirmish-tts/modules/import/deck")
+local PlayArea = require("swia-skirmish-tts/modules/import/play_area")
+local FigureBag = require("swia-skirmish-tts/modules/import/figure_bag")
+
+local Logger = require("swia-skirmish-tts/modules/common/logger")
+local logger = Logger:create("import", "Blue"):setState(false)
+
+-- -----------------------------------------------------------------------------
+-- Globals
+-- -----------------------------------------------------------------------------
+
+local Decks = {
+  [DEFS.DEPLOYMENT_CARD] = {
+    [DEFS.FIRST_PLAYER] = Deck:create(DEFS.FIRST_PLAYER, {"13085e", "73dc04", "0876dd", "eb491f", "bdcd4c", "b2795c", "68498a", "2b5a37"}),
+    [DEFS.SECOND_PLAYER] = Deck:create(DEFS.SECOND_PLAYER, {"6c7726", "331eb4", "f5dab9", "bc25b4", "bdcd4c", "b2795c", "68498a", "2b5a37"}),
+  },
+  [DEFS.COMMAND_CARD] = {
+    [DEFS.FIRST_PLAYER] = Deck:create(DEFS.FIRST_PLAYER, {"e8d839", "6d6806"}),
+    [DEFS.SECOND_PLAYER] = Deck:create(DEFS.SECOND_PLAYER, {"beff65", "6d6806"})
+  }
+}
+
+local PlayAreas = {}
+for _, player in pairs(DEFS.PLAYERS) do
+  PlayAreas[player] = PlayArea:create(player)
+end
+
+local FiguresBags = FigureBag:create({"b3bed9", "9c3465", "048972", "d88487"})
+
+-- -----------------------------------------------------------------------------
+-- Import
+-- -----------------------------------------------------------------------------
+
+local function spawnArmy(army, player)
+  logger:debug({army, player}, "spawnArmy")
+
+  local area = PlayAreas[player]
+  if area == nil then
+    return false
+  end
+
+  local decks = {
+    [DEFS.DEPLOYMENT_CARD] = army[DEFS.DEPLOYMENT_CARD],
+    [DEFS.COMMAND_CARD] = army[DEFS.COMMAND_CARD]
+  }
+
+  for cardType, cards in pairs(decks) do
+    for index, name in pairs(cards) do
+      local position = area:getCardPosition(cardType, index)
+      local rotation = area:getCardRotation(cardType, index)
+      local deck = Decks[cardType][player]
+      if deck ~= nil and position ~= nil and rotation ~= nil then
+        logger:debug({deck, name, position, rotation}, "spawnArmy")
+        deck:take(name, position, rotation, function(card)
+          if cardType == DEFS.DEPLOYMENT_CARD then
+            Wait.frames(function()
+              FiguresBags:take(card, player)
+            end, 1)
+          end
+        end)
+      end
+    end
+  end
+
+  return true
+end
+
+-- -----------------------------------------------------------------------------
+-- Global Events
+-- -----------------------------------------------------------------------------
+
+local currentUrl = nil
+
+function onLoad()
+  logger:debug({}, "onLoad")
+  currentUrl = nil
+end
+
+function onLinkChanged(player, link, id)
+  logger:debug({player, link, id}, "onLinkChanged")
+  currentUrl = link
+end
+
+function onArmyImport(player, state, id)
+  logger:debug({player, state, id}, "onArmyImport")
+  local playerName = DEFS.getPlayerByColor(player.color)
+  if playerName ~= nil then
+    local url = currentUrl or self.UI.getAttribute("infUrl", "text")
+    self.UI.setAttribute("infUrl", "text", "")
+    currentUrl = ""
+
+    local army = TTA.getArmy(url)
+    if army == nil then
+      broadcastToColor("ERROR! Invalid link.", player.color)
+      return
+    end
+  
+    --if #army[DEFS.DEPLOYMENT_CARD] <= 0 then
+    --  broadcastToColor("ERROR! Invalid link: no deployment cards.", player.color)
+    --  return
+    --end
+    ---if #army[DEFS.COMMAND_CARD] ~= 15 then
+    ---  broadcastToColor("ERROR! Invalid link: not enough command cards.", player.color)
+    --  return
+    ---end
+ 
+    local spawned = spawnArmy(army, playerName)
+    if spawned then
+      broadcastToColor("Army imported successfully!", player.color)
+    else
+      broadcastToColor("ERROR! Cannot import army!", player.color)
+    end
+
+  else
+    broadcastToColor("Choose Blue or Red player!", player.color)
+  end
+end

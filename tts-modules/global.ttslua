@@ -1,0 +1,177 @@
+-- -----------------------------------------------------------------------------
+-- Star Wars: Imperial Assault - Skirmish
+-- by Ikon
+-- -----------------------------------------------------------------------------
+
+local DEFS = require("swia-skirmish-tts/modules/common/definitions")
+local GLOBAL_UI = require("swia-skirmish-tts/modules/global/global_ui")
+
+local DeploymentCard = require("swia-skirmish-tts/modules/common/deployment_card")
+local EventHistory = require("swia-skirmish-tts/modules/global/event_history")
+local EventRouter = require("swia-skirmish-tts/modules/global/event_router")
+local PlayArea = require("swia-skirmish-tts/modules/global/play_area")
+
+local Logger = require("swia-skirmish-tts/modules/common/logger")
+local logger = Logger:create("global", "Pink"):setState(false)
+
+-- -----------------------------------------------------------------------------
+-- Globals
+-- -----------------------------------------------------------------------------
+
+local playAreasByPlayer = {}
+for _, player in pairs(DEFS.PLAYERS) do
+  playAreasByPlayer[player] = PlayArea:create(player)
+end
+
+local playAreasByZone = {
+  ["660028"] = playAreasByPlayer[DEFS.FIRST_PLAYER],
+  ["bbca3f"] = playAreasByPlayer[DEFS.SECOND_PLAYER],
+}
+
+local Router = EventRouter:create()
+
+-- -----------------------------------------------------------------------------
+-- Utilities
+-- -----------------------------------------------------------------------------
+
+local History = {}
+
+function logEvent(eventType, object, zone)
+  local card = DeploymentCard:create(object)
+  if card ~= nil and card:isVisible() then
+    logger:debug({eventType, object, zone}, "logEvent")
+    local history = History[object.getGUID()]
+    if history == nil then
+       history = EventHistory:create(Router)
+       History[object.getGUID()] = history
+    end
+    local area = nil
+    if zone ~= nil then
+      area = playAreasByZone[zone.getGUID()]
+    end
+    history:log(eventType, card, area)
+  end
+end
+
+-- -----------------------------------------------------------------------------
+-- UI Events
+-- -----------------------------------------------------------------------------
+
+function onLoad(savedState)
+  debug(savedState, "Global:onLoad")
+  for guid, area in pairs(playAreasByZone) do
+    Router:onDiceResultsUpdate(area, nil)
+    local zone = getObjectFromGUID(guid)
+    for _, object in ipairs(zone.getObjects() or {}) do
+      local card = DeploymentCard:create(object)
+      if card ~= nil and card:isVisible() then
+        Router:onCardEnterPlayArea(card, area)
+      end
+    end
+  end
+end
+
+function onObjectSpawn(object)
+  logger:debug({object}, "Global:onObjectSpawn")
+  logEvent(EventHistory.PICKUP, object)
+end
+
+function onObjectDestroy(object)
+  logger:debug({object}, "Global:onObjectDestroy")
+  for guid, area in pairs(playAreasByZone) do
+    local zone = getObjectFromGUID(guid)
+    if zone ~= nil then
+      for _, obj in ipairs(zone.getObjects() or {}) do
+        if obj.getGUID() == object.getGUID() then
+          local card = DeploymentCard:create(object)
+          if card ~= nil and card:isVisible() then
+            Router:onCardLeavePlayArea(object, area)
+          end
+          return
+        end
+      end
+    end
+  end
+end
+
+function onValueChanged(player, value, id)
+  logger:debug({player, value, id}, "Global:onValueChanged")
+  player, group, figure = GLOBAL_UI.splitId(id)
+  local area = playAreasByPlayer[player]
+  if area ~= nil and group ~= "" then
+    if value == "True" then
+      Router:onButtonExhaust(area, group)
+    elseif value == "False" then
+      Router:onButtonReady(area, group)
+    end
+  end
+end
+
+function onButtonClick(player, button, id)
+  logger:debug({player, button, id}, "Global:onButtonClick")
+  player, group, figure = GLOBAL_UI.splitId(id)
+  local area = playAreasByPlayer[player]
+  if area ~= nil and group ~= "" and figure ~= "" then
+    if button == "-1" then
+      Router:onButtonRecover(area, group, figure)
+    elseif button == "-2" then
+      Router:onButtonDamage(area, group, figure)
+    elseif button == "-3" then
+      Router:onButtonColorChange(area, group, figure)
+    end
+  end
+end
+
+function onObjectLeaveScriptingZone(zone, object)
+  logger:debug({zone, object}, "Global:onObjectLeaveScriptingZone")
+  logEvent(EventHistory.LEAVE, object, zone)
+end
+
+function onObjectPickUp(player, object)
+  logger:debug({player, object}, "Global:onObjectPickUp")
+  logEvent(EventHistory.PICKUP, object)
+end
+
+function onObjectLeaveContainer(container, object)
+  logger:debug({container, object}, "Global:onObjectLeaveContainer")
+  logEvent(EventHistory.PICKUP, object)
+end
+
+function onObjectDrop(player, object)
+  logger:debug({player, object}, "Global:onObjectDrop")
+  logEvent(EventHistory.DROP, object)
+end
+
+function onObjectEnterScriptingZone(zone, object)
+  logger:debug({zone, object}, "Global:onObjectEnterScriptingZone")
+  logEvent(EventHistory.ENTER, object, zone)
+end
+
+function onDiceResultsUpdate(args)
+  local color, results = args[1], args[2]
+  logger:debug({color, results}, "Global:onDiceResultsUpdate")
+  local player = DEFS.getPlayerByColor(color)
+  local area = playAreasByPlayer[player]
+  if area ~= nil and results ~= nil then
+    Router:onDiceResultsUpdate(area, results)
+  end
+end
+
+function waitCardAdded(card, area, callback)
+  debug(card, area, callback, "Global:waitCardAdded")
+  Wait.condition(callback, function()
+    return area:hasCard(card)
+  end)
+end
+
+function onColorTintChange(args)
+  local player, object, index, color = args[1], args[2], args[3], args[4]
+  logger:debug({player, object, index, color}, "Global:onColorTintChange")
+  local area = playAreasByPlayer[player]
+  if area ~= nil then
+    waitCardAdded(object, area, function()
+      logger:debug({area, object, index, color}, "Global:onColorTintChange:onCardAdded")
+      Router:onColorTintChange(area, object, index, color)
+    end)
+  end
+end

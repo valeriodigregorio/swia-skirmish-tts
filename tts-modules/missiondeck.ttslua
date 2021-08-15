@@ -1,0 +1,154 @@
+-- -----------------------------------------------------------------------------
+-- Star Wars: Imperial Assault - Skirmish
+-- by Ikon
+-- -----------------------------------------------------------------------------
+
+local Grid = require("swia-skirmish-tts/modules/missiondeck/grid")
+local Clock = require("swia-skirmish-tts/modules/missiondeck/clock")
+local MapBoard = require("swia-skirmish-tts/modules/missiondeck/map_board")
+
+local UTILS = require("swia-skirmish-tts/modules/common/utils")
+local MAP = require("swia-skirmish-tts/modules/missiondeck/map")
+
+local Logger = require("swia-skirmish-tts/modules/common/logger")
+local logger = Logger:create("missiondeck", "Blue"):setState(false)
+
+-- -----------------------------------------------------------------------------
+--  Globals
+-- -----------------------------------------------------------------------------
+
+local MATCH_DURATION = 65 * 60
+local MAP_ZONE = "186b64"
+local BAG = {
+  ["Door"] = "b4e58a",
+  ["Terminal"] = "c4c6e2",
+  ["Crate"] = "e98c35",
+  ["Strain Token"] = "649899",
+  ["Damage Token"] = "7a1a8c",
+  ["Mission Token"] = "696b6a",
+  ["Faction Token"] = "145c40",
+}
+
+local grid = Grid:create()
+local timer = Clock:create("5f027b")
+local mapBoard = MapBoard:create("91cbe0")
+
+-- -----------------------------------------------------------------------------
+--  Map Area
+-- -----------------------------------------------------------------------------
+
+local function clearObjects()
+  logger:debug({}, "clearObjects")
+  local _, map = mapBoard:getCurrentMap()
+  for _, obj in pairs(getObjectFromGUID(MAP_ZONE).getObjects()) do
+    if obj.getGUID() ~= map.getGUID() then
+      destroyObject(obj)
+    end
+  end
+end
+
+local function spawnComponent(component)
+  logger:debug({component}, "spawnComponent")
+  local bag = getObjectFromGUID(BAG[component.type])
+  if bag ~= nil then
+    bag.takeObject({
+      position = component.position,
+      rotation = component.rotation,
+      smooth = true,
+      callback_function = function(obj)
+        if component.state ~= nil and component.state ~= 1 then
+          obj.setState(component.state)
+        end
+      end
+    })
+  end
+end
+
+local function loadComponents(mission)
+  local state, map_obj = mapBoard:getCurrentMap()
+  logger:debug({mission, state, map_obj}, "loadComponents")
+
+  local map_items = MAP[state].items
+  if (map_items ~= nil) then
+    for _, component in pairs(map_items.always) do
+      spawnComponent(component)
+    end
+    for _, component in pairs(map_items[mission]) do
+      spawnComponent(component)
+    end
+  end
+
+  if MAP[state].cards[mission] ~= nil then
+    logger:debug({map_obj, MAP[state].cards[mission]}, "loadComponents")
+    printToAll("Mission \""..UTILS.safeGetName(map_obj).. " - "..MAP[state].cards[mission].."\" loaded!")
+  else
+    logger:debug({map_obj}, "loadComponents")
+    printToAll("Mission \""..UTILS.safeGetName(map_obj).."\" loaded!")
+  end
+end
+
+local function setGridState(state)
+  logger:debug({state}, "setGridState")
+  if state ~= nil then
+    local params = MAP[state].grid
+    if params ~= nil then
+      grid:enable(params.sizeX, params.sizeY, params.offsetX, params.offsetY)
+    else
+      grid:disable()
+    end
+  end
+end
+
+local function updateMapState(object)
+  local state = mapBoard:getState(object)
+  if state ~= nil then
+    logger:debug({object, state}, "updateMapState")
+    clearObjects()
+    setGridState(state)
+    local _, _, mission = mapBoard:getCurrentMission()
+    if mission ~= nil then
+      loadComponents(mission)
+      timer:start(MATCH_DURATION)
+    end
+  end
+end
+
+local function loadMission(state)
+  logger:debug({state}, "loadMission")
+  local current_state, map_obj = mapBoard:getCurrentMap()
+  if current_state ~= state then
+    map_obj.setState(state)
+    logger:debug({MAP[state]}, "loadMission")
+    printToAll("Map \""..MAP[state].name.."\" loaded!")
+  else
+    updateMapState(map_obj)
+  end
+  if state == 1 then
+    timer:show()
+  end
+end
+
+-- -----------------------------------------------------------------------------
+--  Global Event
+-- -----------------------------------------------------------------------------
+
+function onLoad()
+  logger:debug({}, "onLoad")
+  local _, map = mapBoard:getCurrentMap()
+  local state = mapBoard:getState(map)
+  clearObjects()
+  setGridState(state)
+end
+
+function onObjectSpawn(object)
+  updateMapState(object)
+end
+
+function onMissionLoadButtonClick()
+  logger:debug({}, "onMissionLoadButtonClick")
+  local state, map, _ = mapBoard:getCurrentMission()
+  if map == nil then
+    state = 1
+  end
+  loadMission(state)
+end
