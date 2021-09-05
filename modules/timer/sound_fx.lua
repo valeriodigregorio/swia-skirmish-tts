@@ -62,7 +62,7 @@ function SoundFx:tick()
       self:stop()
     elseif value <= self.countdown then
       broadcastToAll(value)
-      debug({value}, "SoundFx:tick")
+      logger:debug({value}, "SoundFx:tick")
     end
     self.lastValue = value
   end

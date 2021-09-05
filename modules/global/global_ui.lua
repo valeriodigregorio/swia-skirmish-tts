@@ -44,16 +44,14 @@ function m.getGroupButtonId(player, group, figure)
     return id
 end
 
-function m.getResultButtonId(player, index)
-    local id = string.format("%s.Result%d", player, index)
-    logger:debug({player, index, id}, "getResultButtonId")
-    return id
-end
-
-function m.getResultButtonIndex(type)
+function m.getResultButtonId(player, type)
     local index = indexes[type]
-    logger:debug({type, index}, "getResultButtonIndex")
-    return index
+    local id = nil
+    if index ~= nil then
+        id = string.format("%s.Result%d", player, index)
+    end
+    logger:debug({player, type, index, id}, "getResultButtonId")
+    return id
 end
 
 return m

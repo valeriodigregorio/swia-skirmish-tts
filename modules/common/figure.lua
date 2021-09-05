@@ -5,8 +5,7 @@
 
 local UTILS = require("swia-skirmish-tts/modules/common/utils")
 local DEFS = require("swia-skirmish-tts/modules/common/definitions")
-
-local DeploymentCard = require("swia-skirmish-tts/modules/common/deployment_card")
+local COMP = require("swia-skirmish-tts/modules/common/components")
 
 local Logger = require("swia-skirmish-tts/modules/common/logger")
 local logger = Logger:create("figure", "Pink"):setState(false)
@@ -39,7 +38,7 @@ function Figure:create(object, player)
   logger:debug({object, player}, "Figure:create")
   local obj = {}
   setmetatable(obj, Figure)
-  obj.id = UTILS.safeGetName(object)
+  obj.id = COMP.getFigureId(object)
   obj.object = object
   obj.player = player
   return obj
@@ -47,11 +46,10 @@ end
 
 function Figure:matchCard(card)
   logger:debug({self, card}, "Figure:matchCard")
-  local deployment = DeploymentCard:create(card)
-  if deployment == nil then
+  if card == nil then
     return false
   end
-  local id = deployment:getFigureId()
+  local id = card:getFigureId()
   return id == self.id
 end
 

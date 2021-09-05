@@ -3,7 +3,7 @@
 -- by Ikon
 -- -----------------------------------------------------------------------------
 
-local DeploymentCard = require("swia-skirmish-tts/modules/common/deployment_card")
+local COMP = require("swia-skirmish-tts/modules/common/components")
 
 local Logger = require("swia-skirmish-tts/modules/common/logger")
 local logger = Logger:create("deck", "Pink"):setState(false)
@@ -29,10 +29,10 @@ function Deck:search(name)
   logger:debug({name}, "Deck:search")
   for _, guid in ipairs(self.guids) do
     local deck = getObjectFromGUID(guid)
-    logger:debug({guid, deck}, "Deck:search")
+    logger:debug({name, deck}, "Deck:search")
     for _, entry in pairs(deck.getObjects()) do
-      local id = DeploymentCard.getCardId(entry) or entry.name
-      logger:debug({entry, id}, "Deck:search")
+      local id = COMP.getDeploymentCardId(entry) or COMP.getCommandCardId(entry)
+      logger:debug({name, id, entry}, "Deck:search")
       if id ~= nil and id == name then
         logger:debug({name, id, entry}, "Deck:search")
         return deck, entry.index

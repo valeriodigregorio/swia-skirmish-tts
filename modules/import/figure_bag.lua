@@ -51,8 +51,12 @@ function FigureBag:_notifyColorTintChange(player, card, color)
   end
 end
 
-function FigureBag:_search(card)
-  logger:debug({self, card}, "FigureBag:search")
+function FigureBag:_search(card_obj)
+  logger:debug({self, card_obj}, "FigureBag:_search")
+  local card = DeploymentCard:create(card_obj)
+  if card == nil then
+    return nil, nil
+  end
   for _, guid in ipairs(self.guids) do
     local bag = getObjectFromGUID(guid)
     local state = 0
@@ -63,6 +67,7 @@ function FigureBag:_search(card)
       for _, st in pairs(object.getStates()) do
         if Figure:create(st):matchCard(card) then
           state = st.id
+          break
         end
       end
     end

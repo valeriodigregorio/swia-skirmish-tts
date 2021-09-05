@@ -28,7 +28,7 @@ function EventHistory:create(router)
 end
 
 function EventHistory:reset()
-  logger:debug({}, "EventHistory:reset")
+  logger:debug({self}, "EventHistory:reset")
   self.area = nil
   self.first = nil
   self.second = nil
@@ -37,7 +37,7 @@ function EventHistory:reset()
 end
 
 function EventHistory:log(eventType, card, area)
-  logger:debug({eventType, card, area}, "EventHistory:log")
+  logger:debug({self, eventType, card, area}, "EventHistory:log")
   self.area = area or self.area
   if eventType == EventHistory.LEAVE then
     self.faceUp[1] = self.faceUp[2]
@@ -80,17 +80,17 @@ function EventHistory:update(card)
     local exhausted = card:isExhausted()
     logger:debug({self.faceUp}, "EventHistory:update")
     if self.faceUp[1] ~= nil and self.faceUp[2] ~= nil and
-       self.faceUp[1] ~= self.faceUp[2] then
+       self.faceUp[1] ~= self.faceUp[2] and self.area ~= nil then
       if self.faceUp[2] then
-        self.router:onCardDeploy(card)
+        self.router:onCardDeploy(card, self.area)
       else
-        self.router:onCardDeplete(card)
+        self.router:onCardDeplete(card, self.area)
       end
-    elseif self.exhausted ~= exhausted then
+    elseif self.exhausted ~= exhausted and self.area ~= nil then
       if exhausted then
-        self.router:onCardExhaust(card)
+        self.router:onCardExhaust(card, self.area)
       else
-        self.router:onCardReady(card)
+        self.router:onCardReady(card, self.area)
       end
     else
       return

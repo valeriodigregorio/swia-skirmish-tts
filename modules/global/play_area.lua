@@ -28,9 +28,12 @@ function PlayArea:create(player)
   obj.cards = {}
   obj.cards_list = {}
   obj.count = 0
-  self.results = {}
-  for _, attribute in DEFS.DICE_ATTRIBUTES do
-    self.results[attribute] = Result:create(self.player, attribute)
+  obj.results = {}
+  for _, result in ipairs(DEFS.ATTACK_RESULTS) do
+    obj.results[result] = Result:create(player, result)
+  end
+  for _, result in ipairs(DEFS.DEFENSE_RESULTS) do
+    obj.results[result] = Result:create(player, result)
   end
   return obj
 end
@@ -45,9 +48,9 @@ function PlayArea:update()
   end
 end
 
-function PlayArea:hasCard(object)
-  logger:debug({self, object}, "PlayArea:hasCard")
-  return self.cards[object.getGUID()] ~= nil
+function PlayArea:getCard(guid)
+  logger:debug({self, guid}, "PlayArea:getCard")
+  return self.cards[guid]
 end
 
 function PlayArea:addCard(card)
@@ -70,8 +73,9 @@ function PlayArea:removeCard(card)
     for i=1, #self.cards_list do
       self.cards_list[i]:disable()
     end
-    table.remove(self.cards_list, card.group)
+    local gui = self.cards[card.object.getGUID()]
     self.cards[card.object.getGUID()] = nil
+    table.remove(self.cards_list, gui.group)
     self.count = self.count - 1
     self:update()
     return c
@@ -150,16 +154,9 @@ end
 
 function PlayArea:setDiceResults(results)
   logger:debug({self, results}, "PlayArea:setDiceResults")
-  if results == nil then
-    for _, result in pairs(self.results) do
-      result:setResult(0)
-    end
-  else
-    for attribute, value in pairs(results) do
-      if value >= 0 then
-        self.results[attribute]:setResult(value)
-      end
-    end
+  results = DEFS.sanitizeResults(results)
+  for attribute, value in pairs(results) do
+    self.results[attribute]:setResult(value)
   end
 end
 

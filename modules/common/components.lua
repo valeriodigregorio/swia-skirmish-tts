@@ -8,16 +8,21 @@ local STRING = require("swia-skirmish-tts/modules/common/string")
 
 local m = {}
 
+local IACP_CARD_TAG = "IACP"
+
 -- -----------------------------------------------------------------------------
 --  Utilities
 -- -----------------------------------------------------------------------------
 
-local function cleanupCodes(str)
-  return str:gsub("%[[%a%d/]*%]", "")
-end
-
 local function handleLukeSkywalkerCard(name, description)
   if string.match(name, "Luke Skywalker") then
+    return name..", "..description
+  end
+  return name
+end
+
+local function handleTheMandalorianCard(name, description)
+  if string.match(name, "The Mandalorian") then
     return name..", "..description
   end
   return name
@@ -30,9 +35,23 @@ local function handleTemporaryAllianceCard(name, description)
   return name
 end
 
-local CardHandles = {
+local function handleIACPCard(name, description)
+  if string.match(description, IACP_CARD_TAG) then
+    name = name:gsub(" %- "..IACP_CARD_TAG, "")
+    return name.." - "..IACP_CARD_TAG
+  end
+  return name
+end
+
+local DeploymentCardHandles = {
   handleLukeSkywalkerCard,
-  handleTemporaryAllianceCard
+  handleTheMandalorianCard,
+  handleTemporaryAllianceCard,
+  handleIACPCard
+}
+
+local CommandCardHandles = {
+  handleIACPCard
 }
 
 local function handleEliteFigure(name, _)
@@ -49,9 +68,17 @@ local function handleLukeSkywalkerFigure(name, description)
   return name
 end
 
+local function handleTheMandalorianFigure(name, description)
+  if string.match(name, "The Mandalorian") and string.match(description, "Rising Phoenix") then
+    return name -- TODO: special mini -- .." (Phoenix)"
+  end
+  return name
+end
+
 local FigureHandles = {
   handleEliteFigure,
-  handleLukeSkywalkerFigure
+  handleLukeSkywalkerFigure,
+  handleTheMandalorianFigure
 }
 
 -- -----------------------------------------------------------------------------
@@ -74,12 +101,19 @@ function m.getCardDescription(object)
   end
 end
 
-function m.getCardId(object)
-  local name = UTILS.safeGetName(object)
-  name = cleanupCodes(name)
-  local description = m.getCardDescription(object)
-  description = cleanupCodes(description)
-  for _, handle in ipairs(CardHandles) do
+function m.getDeploymentCardId(object)
+  local name = STRING.cleanupCodes(UTILS.safeGetName(object))
+  local description = STRING.cleanupCodes(m.getCardDescription(object))
+  for _, handle in ipairs(DeploymentCardHandles) do
+    name = handle(name, description)
+  end
+  return name
+end
+
+function m.getCommandCardId(object)
+  local name = STRING.cleanupCodes(UTILS.safeGetName(object))
+  local description = STRING.cleanupCodes(m.getCardDescription(object))
+  for _, handle in ipairs(CommandCardHandles) do
     name = handle(name, description)
   end
   return name
@@ -100,8 +134,8 @@ function m.isCompanion(object)
 end
 
 function m.getFigureId(object)
-  local name = UTILS.safeGetName(object)
-  local description = UTILS.safeGetDescription(object)
+  local name = STRING.cleanupCodes(UTILS.safeGetName(object))
+  local description = STRING.cleanupCodes(UTILS.safeGetDescription(object))
   for _, handle in ipairs(FigureHandles) do
     name = handle(name, description)
   end

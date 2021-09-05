@@ -16,19 +16,20 @@ local Result = {}
 Result.__index = Result
 
 function Result:create(player, type)
-  logger:debug({player, type}, "Result:create")
   local obj = {}
   setmetatable(obj, Result)
 
-  local index = GLOBAL_UI.getResultButtonIndex(type)
-  if index == nil then
-    logger:error({"ERROR: Invalid result type.", type}, "Result:create")
+  obj.id = GLOBAL_UI.getResultButtonId(player, type)
+  if obj.id == nil then
+    logger:error({"ERROR: Invalid result ID.", player, type}, "Result:create")
     return nil
   end
 
-  obj.id = GLOBAL_UI.getResultButtonId(player, index)
+  obj.player = player
   obj.type = type
-  self:setResult(0)
+  obj:setResult(0)
+
+  logger:debug({obj, player, type}, "Result:create")
   return obj
 end
 

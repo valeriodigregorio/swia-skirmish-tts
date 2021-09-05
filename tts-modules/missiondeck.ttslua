@@ -67,24 +67,27 @@ end
 local function loadComponents(mission)
   local state, map_obj = mapBoard:getCurrentMap()
   logger:debug({mission, state, map_obj}, "loadComponents")
-
-  local map_items = MAP[state].items
-  if (map_items ~= nil) then
-    for _, component in pairs(map_items.always) do
-      spawnComponent(component)
-    end
-    for _, component in pairs(map_items[mission]) do
-      spawnComponent(component)
-    end
-  end
-
-  if MAP[state].cards[mission] ~= nil then
-    logger:debug({map_obj, MAP[state].cards[mission]}, "loadComponents")
-    printToAll("Mission \""..UTILS.safeGetName(map_obj).. " - "..MAP[state].cards[mission].."\" loaded!")
-  else
-    logger:debug({map_obj}, "loadComponents")
-    printToAll("Mission \""..UTILS.safeGetName(map_obj).."\" loaded!")
-  end
+  Wait.condition(function()
+      local map_items = MAP[state].items
+      if (map_items ~= nil) then
+        for _, component in pairs(map_items.always) do
+          spawnComponent(component)
+        end
+        for _, component in pairs(map_items[mission]) do
+          spawnComponent(component)
+        end
+      end
+      if MAP[state].cards[mission] ~= nil then
+        logger:debug({map_obj, MAP[state].cards[mission]}, "loadComponents")
+        printToAll("Mission \""..UTILS.safeGetName(map_obj).. " - "..MAP[state].cards[mission].."\" loaded!")
+      else
+        logger:debug({map_obj}, "loadComponents")
+        printToAll("Mission \""..UTILS.safeGetName(map_obj).."\" loaded!")
+      end
+    end,
+    function()
+      return not map_obj.loading_custom
+    end)
 end
 
 local function setGridState(state)
@@ -105,11 +108,15 @@ local function updateMapState(object)
     logger:debug({object, state}, "updateMapState")
     clearObjects()
     setGridState(state)
-    local _, _, mission = mapBoard:getCurrentMission()
-    if mission ~= nil then
-      loadComponents(mission)
-      timer:start(MATCH_DURATION)
+    if state > 1 then
+      local _, _, mission = mapBoard:getCurrentMission()
+      if mission ~= nil then
+        loadComponents(mission)
+        timer:start(MATCH_DURATION)
+        return
+      end
     end
+    timer:show()
   end
 end
 
@@ -122,9 +129,6 @@ local function loadMission(state)
     printToAll("Map \""..MAP[state].name.."\" loaded!")
   else
     updateMapState(map_obj)
-  end
-  if state == 1 then
-    timer:show()
   end
 end
 

@@ -17,7 +17,6 @@ local TTA_BASE_URL = "classic.tabletopadmiral.com/imperialassault/nuc"
 local TTA_HTTP_BASE_URL = "http://"..TTA_BASE_URL
 local TTA_HTTPS_BASE_URL = "https://"..TTA_BASE_URL
 local TTA_SEPARATOR = "ncc"
-local TTA_IACP_PATTERN = " - IACP"
 
 local cards = {
   [DEFS.DEPLOYMENT_CARD] = {
@@ -139,6 +138,7 @@ local cards = {
     [116] = "Under Duress",
     [117] = "Advanced Com Systems",
     [118] = "Fury of Kashyyyk",
+    -- 119 is None
     [120] = "Jabba the Hutt",
     [121] = "Black Market",
     [122] = "Heroic Effort",
@@ -146,6 +146,7 @@ local cards = {
     [124] = "Indentured Jester",
     [125] = "Elite Royal Guard",
     [126] = "Unshakable",
+    -- 127 is Salacious
     [128] = "Motivation",
     [129] = "Hera Syndulla",
     [130] = "Scavenged Weaponry",
@@ -156,6 +157,7 @@ local cards = {
     [135] = "Focused on the Kill",
     [136] = "Elite Jawa Scavenger",
     [138] = "Ko-Tun Feralo",
+    -- 137 is missing
     [139] = "Driven by Hatred",
     [140] = "Maul",
     [141] = "Emperor Palpatine",
@@ -172,6 +174,8 @@ local cards = {
     [152] = "Elite Clawdite Shapeshifter",
     [153] = "Elite Riot Trooper",
     [154] = "Elite Sentry Droid",
+    -- 155 is missing
+    -- 156 is J4X
     [157] = "Zeb Orrelios",
     [158] = "Tress Hacnua",
     [159] = "Elite Loth-cat",
@@ -183,13 +187,13 @@ local cards = {
     [165] = "Ezra Bridger",
     [166] = "Doubt",
     [167] = "Sabine Wren",
+    -- 168 is missing
     [169] = "Extra Armor",
     [170] = "Hondo Ohnaka",
     [171] = "Lie in Ambush",
     [172] = "Spectre Cell",
     [173] = "Thrawn",
     [174] = "Heavy Fire",
-
     [175] = "Ahsoka Tano - IACP",
     [176] = "BT-1 - IACP",
     [177] = "Diala Passil - IACP",
@@ -214,11 +218,14 @@ local cards = {
     [196] = "Advanced Com Systems - IACP",
     [197] = "Elite AT-ST - IACP",
     [198] = "Boba Fett - IACP",
+    -- 199 is missing
+    -- 200 is missing
     [201] = "Fenn Signis - IACP",
     [202] = "Gaarkhan - IACP",
     [203] = "General Weiss - IACP",
     [204] = "Imperial Retrofitting - IACP",
     [205] = "Jyn Odan - IACP",
+    -- 206 is missing
     [207] = "Royal Guard Champion - IACP",
     [208] = "Suppressive Fire - IACP",
     [209] = "4-LOM - IACP",
@@ -240,7 +247,7 @@ local cards = {
     [225] = "Jyn Erso - IACP",
     [226] = "Director Krennic - IACP",
     [227] = "IG-11 - IACP",
-    [228] = "The Mandalorian - IACP",
+    [228] = "The Mandalorian, Renegade Hunter - IACP",
     [229] = "The Child - IACP",
     [230] = "Clan of Two - IACP",
     [231] = "Elite E-Web Engineer - IACP",
@@ -255,12 +262,40 @@ local cards = {
     [240] = "The Darksaber - IACP",
     [241] = "Elite Trandoshan Hunter - IACP",
     [242] = "Verena Talos - IACP",
-    [243] = "Cassian Andor - IACP",
-    [244] = "K-2SO - IACP",
+    [243] = "Agent Kallus - IACP",
+    [244] = "Captain Terro - IACP",
+    [245] = "Cassian Andor - IACP",
+    [246] = "Elite Clawdite Shapeshifter",  -- IACP eClaw then removed
+    [247] = "Davith Elso - IACP",
+    [248] = "Doctor Aphra - IACP",
+    [249] = "Elite Heavy Stormtrooper - IACP",
+    [250] = "HK-47 - IACP",
+    [251] = "Iden Versio - IACP",
+    [252] = "K-2SO - IACP",
+    [253] = "Luke Skywalker, Jedi Knight - IACP",
+    [254] = "Mara Jade - IACP",
+    [255] = "Murne Rin - IACP",
+    [256] = "Elite Wampa - IACP",
+    [257] = "Fury of Kashyyyk - IACP",
+    [258] = "The General's Ranks - IACP",
+    [259] = "Under Duress - IACP",
+    [260] = "Cara Dune - IACP",
+    [261] = "Bib Fortuna - IACP",
+    [262] = "CT-1701 - IACP",
+    [263] = "Elite Dark Trooper Mk III - IACP",
+    [264] = "Elite Dewback Rider - IACP",
+    [265] = "First Strike - IACP",
+    [266] = "Elite Flametrooper - IACP",
+    [267] = "Migs Mayfeld - IACP",
+    [268] = "Moff Gideoon - IACP",
+    [269] = "Elite Snowtrooper - IACP",
+    [270] = "Elite Z-6 Trooper - IACP",
+    [271] = "The Mandalorian, Rising Phoenix - IACP",
   },
   [DEFS.COMMAND_CARD] = {
     [1] = "Heart of Freedom",
     [2] = "Self-Defense",
+    -- 3 is missing
     [4] = "Espionage Mastery",
     [5] = "Intelligence Leak",
     [6] = "Smuggled Supplies",
@@ -490,10 +525,11 @@ local cards = {
     [230] = "Foresee",
     [231] = "Combat Resupply",
     [232] = "Escalating Hostility",
-
     [233] = "Assassinate - IACP",
+    -- 234 is missing
     [235] = "On the Lam - IACP",
     [236] = "Deflection - IACP",
+    -- 237 is missing
     [238] = "Mandalorian Tactics - IACP",
     [239] = "Knowledge and Defense - IACP",
     [240] = "Close and Personal - IACP",
@@ -501,13 +537,33 @@ local cards = {
     [242] = "Get Behind Me! - IACP",
     [243] = "Parry - IACP",
     [244] = "Preservation Protocol - IACP",
+    -- 245 is missing
     [246] = "There Is No Try - IACP",
     [247] = "Iron Will - IACP",
     [248] = "Built on Hope - IACP",
     [249] = "Deploy the Garrison! - IACP",
     [250] = "Guild Programming - IACP",
     [251] = "Whistling Birds - IACP",
-    [252] = "Blend In - IACP",
+    [252] = "Apex Predator - IACP",
+    [253] = "Blend In - IACP",
+    [254] = "Cavalry Charge - IACP",
+    [255] = "Definition: 'Love' - IACP",
+    [256] = "Face Me! - IACP",
+    [257] = "Feint - IACP",
+    [258] = "Overwhelming Impact - IACP",
+    [259] = "Rapid Recalibration - IACP",
+    [260] = "Reactive Loyalties - IACP",
+    [261] = "Rest in Peace - IACP",
+    [262] = "Sniper Configuration - IACP",
+    [263] = "Static Pulse - IACP",
+    [264] = "Windfall - IACP",
+    -- 265 is missing
+    [266] = "Ambush - IACP",
+    [267] = "Covering Fire - IACP",
+    [268] = "Expose Weakness - IACP",
+    [269] = "Honoring the Fallen - IACP",
+    [270] = "Demoralizing Monologue - IACP",
+    [271] = "Palace Politics - IACP",
   }
 }
 

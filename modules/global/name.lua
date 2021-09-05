@@ -91,14 +91,14 @@ end
 
 function Name:deploy()
   logger:debug({self.id}, "Name:deploy")
-  local text = self.card:getId()
+  local text = self.card:getName()
   local color = DEFS.getPlayerColor(self.player)
   self:setUI(text, color, true)
 end
 
 function Name:deplete()
   logger:debug({self.id}, "Name:deplete")
-  local text = self.card:getId()
+  local text = self.card:getName()
   self:setUI(text, DEFS.DisabledColor, false)
 end
 

@@ -19,12 +19,12 @@ local logger = Logger:create("import", "Blue"):setState(false)
 
 local Decks = {
   [DEFS.DEPLOYMENT_CARD] = {
-    [DEFS.FIRST_PLAYER] = Deck:create(DEFS.FIRST_PLAYER, {"13085e", "73dc04", "0876dd", "eb491f", "bdcd4c", "b2795c", "68498a", "2b5a37"}),
-    [DEFS.SECOND_PLAYER] = Deck:create(DEFS.SECOND_PLAYER, {"6c7726", "331eb4", "f5dab9", "bc25b4", "bdcd4c", "b2795c", "68498a", "2b5a37"}),
+    [DEFS.FIRST_PLAYER] = Deck:create(DEFS.FIRST_PLAYER, {"13085e", "73dc04", "0876dd", "eb491f", "fc14e3", "862303", "cb15f9", "6d86b5"}),
+    [DEFS.SECOND_PLAYER] = Deck:create(DEFS.SECOND_PLAYER, {"6c7726", "331eb4", "f5dab9", "bc25b4", "fc14e3", "862303", "cb15f9", "6d86b5"}),
   },
   [DEFS.COMMAND_CARD] = {
-    [DEFS.FIRST_PLAYER] = Deck:create(DEFS.FIRST_PLAYER, {"e8d839", "6d6806"}),
-    [DEFS.SECOND_PLAYER] = Deck:create(DEFS.SECOND_PLAYER, {"beff65", "6d6806"})
+    [DEFS.FIRST_PLAYER] = Deck:create(DEFS.FIRST_PLAYER, {"e8d839", "cb3aad"}),
+    [DEFS.SECOND_PLAYER] = Deck:create(DEFS.SECOND_PLAYER, {"beff65", "cb3aad"})
   }
 }
 
@@ -102,16 +102,16 @@ function onArmyImport(player, state, id)
       broadcastToColor("ERROR! Invalid link.", player.color)
       return
     end
-  
-    --if #army[DEFS.DEPLOYMENT_CARD] <= 0 then
-    --  broadcastToColor("ERROR! Invalid link: no deployment cards.", player.color)
-    --  return
-    --end
-    ---if #army[DEFS.COMMAND_CARD] ~= 15 then
-    ---  broadcastToColor("ERROR! Invalid link: not enough command cards.", player.color)
-    --  return
-    ---end
- 
+
+    if #army[DEFS.DEPLOYMENT_CARD] <= 0 then
+      broadcastToColor("ERROR! Invalid link: no deployment cards.", player.color)
+      --return
+    end
+    if #army[DEFS.COMMAND_CARD] ~= 15 then
+      broadcastToColor("ERROR! Invalid link: not enough command cards.", player.color)
+      --return
+    end
+
     local spawned = spawnArmy(army, playerName)
     if spawned then
       broadcastToColor("Army imported successfully!", player.color)

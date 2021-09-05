@@ -127,7 +127,7 @@ local DeploymentCards = {
   ["Vader's Finest"] = {health = nil, figures = 0, affiliation=DEFS.IMPERIAL, system="FFG"},
   ["Zillo Technique"] = {health = -1, figures = 0, affiliation=DEFS.IMPERIAL, system="FFG"},
 
-  -- FFG, Mercenarz
+  -- FFG, Mercenary
   ["Beast Tamer"] = {health = -1, figures = 0, affiliation=DEFS.MERCENARY, system="FFG"},
   ["Black Market"] = {health = nil, figures = 0, affiliation=DEFS.MERCENARY, system="FFG"},
   ["Boba Fett"] = {health = 13, figures = 1, affiliation=DEFS.MERCENARY, system="FFG"},
@@ -227,6 +227,12 @@ local DeploymentCards = {
   ["Verena Talos - IACP"] = {health = 11, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
   ["Cassian Andor - IACP"] = {health = 10, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
   ["K-2SO - IACP"] = {health = 8, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
+  ["Davith Elso - IACP"] = {health = 10, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
+  ["Fury of Kashyyyk - IACP"] = {health = nil, figures = 0, affiliation=DEFS.REBEL, system="IACP"},
+  ["Murne Rin - IACP"] = {health = 9, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
+  ["Cara Dune - IACP"] = {health = 14, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
+  ["CT-1701 - IACP"] = {health = 11, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
+  ["Elite Z-6 Trooper - IACP"] = {health = 8, figures = 1, affiliation=DEFS.REBEL, system="IACP"},
 
   -- IACP, Imperial
   ["Imperial Retrofitting - IACP"] = {health = -1, figures = 0, affiliation=DEFS.IMPERIAL, system="IACP"},
@@ -250,6 +256,17 @@ local DeploymentCards = {
   ["Director Krennic - IACP"] = {health = 7, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
   ["Agent Blaise - IACP"] = {health = 8, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
   ["Elite ISB Infiltrator - IACP"] = {health = 7, figures = 2, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Agent Kallus - IACP"] = {health = 12, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Elite Heavy Stormtrooper - IACP"] = {health = 8, figures = 2, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Iden Versio - IACP"] = {health = 11, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["The General's Ranks - IACP"] = {health = nil, figures = 0, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Advanced Com Systems - IACP"] = {health = nil, figures = 0, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Captain Terro - IACP"] = {health = 13, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Elite Dark Trooper Mk III - IACP"] = {health = 10, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Elite Dewback Rider - IACP"] = {health = 9, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Elite Snowtrooper - IACP"] = {health = 7, figures = 3, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Moff Gideoon - IACP"] = {health = 10, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Elite Flametrooper - IACP"] = {health = 8, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
 
   -- IACP, Mercenary
   ["Elite Gamorrean Guard - IACP"] = {health = 8, figures = 2, affiliation=DEFS.MERCENARY, system="IACP"},
@@ -264,16 +281,26 @@ local DeploymentCards = {
   ["Elite Tusken Raider - IACP"] = {health = 7, figures = 2, affiliation=DEFS.MERCENARY, system="IACP"},
   ["Bossk - IACP"] = {health = 11, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
   ["Elite Trandoshan Hunter - IACP"] = {health = 8, figures = 2, affiliation=DEFS.MERCENARY, system="IACP"},
-  ["The Mandalorian - IACP"] = {health = 12, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["The Mandalorian, Renegade Hunter - IACP"] = {health = 12, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
   ["IG-11 - IACP"] = {health = 12, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
   ["Clan of Two - IACP"] = {health = nil, figures = 0, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["Doctor Aphra - IACP"] = {health = 7, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["HK-47 - IACP"] = {health = 11, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["Under Duress - IACP"] = {health = -1, figures = 0, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["Elite Wampa - IACP"] = {health = 12, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["Bib Fortuna - IACP"] = {health = 5, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["First Strike - IACP"] = {health = nil, figures = 0, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["Migs Mayfeld - IACP"] = {health = 11, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["The Mandalorian, Rising Phoenix - IACP"] = {health = 14, figures = 1, affiliation=DEFS.MERCENARY, system="IACP"},
 
   -- IACP, Neutral
   ["Suppressive Fire - IACP"] = {health = -1, figures = 0, affiliation=DEFS.NEUTRAL, system="IACP"},
   ["The Darksaber - IACP"] = {health = -1, figures = 0, affiliation=DEFS.NEUTRAL, system="IACP"},
+  ["Mara Jade - IACP"] = {health = 11, figures = 1, affiliation=DEFS.NEUTRAL, system="IACP"},
 
   -- IACP, Companion
   ["The Child - IACP"] = {health = 2, figures = 1, companion=true, affiliation=DEFS.MERCENARY, system="IACP"},
+  ["\"Dio\" - IACP"] = {health = 4, figures = 1, companion=true, affiliation=DEFS.MERCENARY, system="IACP"},
 }
 
 -- -----------------------------------------------------------------------------
@@ -282,13 +309,11 @@ local DeploymentCards = {
 
 local function getDeploymentCard(object)
   if not COMP.isCard(object) then
-    logger:error({"ERROR: Object is not a card!", object}, "getDeploymentCard")
     return nil, nil
   end
-  local id = COMP.getCardId(object) or ""
+  local id = COMP.getDeploymentCardId(object) or ""
   local card = DeploymentCards[id]
   if card == nil then
-    logger:error({"ERROR: Card ID not found!", id, object}, "getDeploymentCard")
     return nil, nil
   end
   return id, card
@@ -300,17 +325,6 @@ end
 
 local DeploymentCard = {}
 DeploymentCard.__index = DeploymentCard
-
-function DeploymentCard.getCardId(object)
-  logger:debug({object}, "DeploymentCard.getId")
-  local id = COMP.getCardId(object) or ""
-  local card = DeploymentCards[id]
-  if card == nil then
-    id = nil
-  end
-  logger:debug({id, object}, "DeploymentCard.getId")
-  return id
-end
 
 function DeploymentCard:create(object)
   logger:debug({object}, "DeploymentCard:create")
@@ -333,6 +347,11 @@ end
 function DeploymentCard:getId()
   logger:debug({self}, "DeploymentCard.getId")
   return self.id
+end
+
+function DeploymentCard:getName()
+  logger:debug({self}, "DeploymentCard.getId")
+  return STRING.cleanupCodes(self.object.getName())
 end
 
 function DeploymentCard:getFigureId()

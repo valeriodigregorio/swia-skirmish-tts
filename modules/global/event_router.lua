@@ -14,9 +14,10 @@ local logger = Logger:create("name", "Blue"):setState(false)
 local EventRouter = {}
 EventRouter.__index = EventRouter
 
-function EventRouter:create()
+function EventRouter:create(name)
   logger:debug({}, "EventRouter:create")
   local obj = {}
+  obj.name = name
   setmetatable(obj, EventRouter)
   return obj
 end
@@ -26,14 +27,14 @@ function EventRouter:onCardEnterPlayArea(card, area)
   card = area:addCard(card)
   if card ~= nil then
     if card:isExhausted() then
-      self:onCardExhaust(card)
+      self:onCardExhaust(card, area)
     else
-      self:onCardReady(card)
+      self:onCardReady(card, area)
     end
     if card:isFaceUp() then
-      self:onCardDeploy(card)
+      self:onCardDeploy(card, area)
     else
-      self:onCardDeplete(card)
+      self:onCardDeplete(card, area)
     end
   end
 end
@@ -43,36 +44,48 @@ function EventRouter:onCardLeavePlayArea(card, area)
   area:removeCard(card)
 end
 
-function EventRouter:onCardDeploy(card)
-  logger:debug({self, card}, "EventRouter:onCardDeploy")
-  card:deploy()
+function EventRouter:onCardDeploy(card, area)
+  logger:debug({self, card, area}, "EventRouter:onCardDeploy")
+  local c = area:getCard(card.object.getGUID())
+  if c ~= nil then
+    c:deploy()
+  end
 end
 
-function EventRouter:onCardDeplete(card)
-  logger:debug({self, card}, "EventRouter:onCardDeplete")
-  card:deplete()
+function EventRouter:onCardDeplete(card, area)
+  logger:debug({self, card, area}, "EventRouter:onCardDeplete")
+  local c = area:getCard(card.object.getGUID())
+  if c ~= nil then
+    c:deplete()
+  end
 end
 
-function EventRouter:onCardReady(card)
-  logger:debug({self, card}, "EventRouter:onCardReady")
-  card:ready()
+function EventRouter:onCardReady(card, area)
+  logger:debug({self, card, area}, "EventRouter:onCardReady")
+  local c = area:getCard(card.object.getGUID())
+  if c ~= nil then
+    c:ready()
+  end
 end
 
-function EventRouter:onCardExhaust(card)
-  logger:debug({self, card}, "EventRouter:onCardExhaust")
-  card:exhaust()
+function EventRouter:onCardExhaust(card, area)
+  logger:debug({self, card, area}, "EventRouter:onCardExhaust")
+  local c = area:getCard(card.object.getGUID())
+  if c ~= nil then
+    c:exhaust()
+  end
 end
 
 function EventRouter:onButtonReady(area, group)
   logger:debug({self, area, group}, "EventRouter:onButtonReady")
   local gui = area:readyCardGui(group)
-  self:onCardReady(gui.card)
+  self:onCardReady(gui.card, area)
 end
 
 function EventRouter:onButtonExhaust(area, group)
   logger:debug({self, area, group}, "EventRouter:onButtonExhaust")
   local gui = area:exhaustCardGui(group)
-  self:onCardExhaust(gui.card)
+  self:onCardExhaust(gui.card, area)
 end
 
 function EventRouter:onButtonRecover(area, group, figure)
@@ -83,7 +96,7 @@ function EventRouter:onButtonRecover(area, group, figure)
     area:setHealthPoints(group, figure, hp)
     if hp == 1 then
       local gui = area:deployCardGui(group)
-      self:onCardDeploy(gui.card)
+      self:onCardDeploy(gui.card, area)
     end
   end
 end
@@ -96,7 +109,7 @@ function EventRouter:onButtonDamage(area, group, figure)
     area:setHealthPoints(group, figure, hp)
     if hp == 0 and area:getTotalHealthPoints(group) == 0 then
       local gui = area:depleteCardGui(group)
-      self:onCardDeplete(gui.card)
+      self:onCardDeplete(gui.card, area)
     end
   end
 end

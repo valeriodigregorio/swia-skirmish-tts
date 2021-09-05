@@ -68,10 +68,22 @@ m.BLOCK = "Block"
 m.EVADE = "Evade"
 m.DODGE = "Dodge"
 
-m.DICE_ATTRIBUTES = {
+m.DICE_RESULTS = {
     m.DAMAGE,
     m.SURGE,
     m.ACCURACY,
+    m.BLOCK,
+    m.EVADE,
+    m.DODGE
+}
+
+m.ATTACK_RESULTS = {
+    m.DAMAGE,
+    m.SURGE,
+    m.ACCURACY,
+}
+
+m.DEFENSE_RESULTS = {
     m.BLOCK,
     m.EVADE,
     m.DODGE
@@ -117,6 +129,39 @@ function m.cycleColor(color)
         return nil
     end
     return ColorsSequence[color]
+end
+
+function m.isAttack(results)
+    results = results or {}
+    local attack = false
+    for _, result in pairs(m.ATTACK_RESULTS) do
+        attack = attack or ((results[result] or -1) > 0)
+    end
+    return attack
+end
+
+function m.isDefense(results)
+    results = results or {}
+    local defense = false
+    for _, result in pairs(m.DEFENSE_RESULTS) do
+        defense = defense or ((results[result] or -1) >= 0)
+    end
+    return defense
+end
+
+function m.sanitizeResults(results)
+    results = results or {}
+    local dice_results = {}
+    if m.isAttack(results) then
+      for _, result in pairs(m.ATTACK_RESULTS) do
+        dice_results[result] = results[result] or 0
+      end
+      return dice_results
+    end
+    for _, result in pairs(m.DEFENSE_RESULTS) do
+      dice_results[result] = results[result] or 0
+    end
+    return dice_results
 end
 
 return m

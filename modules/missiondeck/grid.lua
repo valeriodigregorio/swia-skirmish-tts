@@ -10,13 +10,13 @@ local logger = Logger:create("grid", "Pink"):setState(false)
 -- Grid
 -- -----------------------------------------------------------------------------
 
-local Grid = {}
-Grid.__index = Grid
+local MapGrid = {}
+MapGrid.__index = MapGrid
 
-function Grid:create()
+function MapGrid:create()
   logger:debug({}, "Grid:create")
   local obj = {}
-  setmetatable(obj, Grid)
+  setmetatable(obj, MapGrid)
   obj:enable(1.0, 1.0, 0.0, 0.0)
   Grid.type = 1
   Grid.color = "Black"
@@ -26,7 +26,7 @@ function Grid:create()
   return obj
 end
 
-function Grid:enable(sizeX, sizeY, offsetX, offsetY)
+function MapGrid:enable(sizeX, sizeY, offsetX, offsetY)
   logger:debug({sizeX, sizeY, offsetX, offsetY}, "Grid:enable")
   Grid.sizeX = sizeX
   Grid.sizeY = sizeY
@@ -36,10 +36,10 @@ function Grid:enable(sizeX, sizeY, offsetX, offsetY)
   Grid.show_lines = true
 end
 
-function Grid:disable()
+function MapGrid:disable()
   logger:debug({}, "Grid:disable")
   Grid.snapping = 1
   Grid.show_lines = false
 end
 
-return Grid
+return MapGrid

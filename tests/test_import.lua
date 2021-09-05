@@ -8,16 +8,14 @@ local TTA = require("swia-skirmish-tts/modules/import/ttadmiral")
 
 local tests = {}
 
-local function test_army(url, dep_cards, cmd_cards, card_sys)
-    local result, system = TTA.getArmy(url)
+local function test_army(url, dep_cards, cmd_cards)
+    local result = TTA.getArmy(url)
 
     assertIn(DEFS.DEPLOYMENT_CARD, result)
     assertEquals(dep_cards, result[DEFS.DEPLOYMENT_CARD])
 
     assertIn(DEFS.COMMAND_CARD, result)
     assertEquals(cmd_cards, result[DEFS.COMMAND_CARD])
-
-    assertEquals(card_sys, system)
 end
 
 function tests.test_ttadmiral_get_army_generic()
@@ -49,14 +47,14 @@ function tests.test_ttadmiral_get_army_generic()
 		[13] = 'Toxic Dart',
 		[14] = 'Urgency',
 		[15] = 'Wild Fury'
-	}, DEFS.IACP)
+	})
 end
 
 function tests.test_ttadmiral_get_army_simple()
 	test_army("http://classic.tabletopadmiral.com/imperialassault/nuc017000000000000000000000000000000000000000ncc000000000000000000000000000000000000000000000", {
 		[1] = 'Chewbacca'
 	}, {
-	}, DEFS.FFG)
+	})
 end
 
 return tests

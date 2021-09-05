@@ -5,6 +5,8 @@
 
 local UTILS = require("swia-skirmish-tts/modules/common/utils")
 local COMP = require("swia-skirmish-tts/modules/common/components")
+local DEFS = require("swia-skirmish-tts/modules/common/definitions")
+
 
 local Logger = require("swia-skirmish-tts/modules/common/logger")
 local logger = Logger:create("dice_tray", "Pink"):setState(false)
@@ -28,25 +30,21 @@ local function sumResults(r1, r2)
 end
 
 local function calculateResults(objects)
-  logger:debug({objects}, "calculateResults")
   local results = {}
   for _, object in pairs(objects) do
-    logger:debug({object}, "calculateResults")
     if COMP.isDie(object) then
       local r = COMP.getDieResults(object)
-      logger:debug({object, r}, "calculateResults")
       results = sumResults(results, r)
     elseif COMP.isHiddenCondition(object) then
-      results["Accuracy"] = (results["Accuracy"] or 0) - 2
+      results[DEFS.ACCURACY] = (results[DEFS.ACCURACY] or 0) - 2
     elseif COMP.isWeakenedCondition(object) then
-      results["Surge"] = (results["Surge"] or 0) - 1
-      results["Evade"] = (results["Evade"] or 0) - 1
+      results[DEFS.SURGE] = (results[DEFS.SURGE] or 0) - 1
+      results[DEFS.EVADE] = (results[DEFS.EVADE] or 0) - 1
     elseif COMP.isPowerToken(object) then
       local description = UTILS.safeGetDescription(object)
       results[description] = (results[description] or 0) + 1
     end
   end
-  logger:debug({results}, "calculateResults")
   return results
 end
 

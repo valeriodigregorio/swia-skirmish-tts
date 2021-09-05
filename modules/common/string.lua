@@ -32,4 +32,11 @@ function m.splitNth(str, n, fn)
   return result
 end
 
+function m.cleanupCodes(str)
+  if str == nil then
+    return str
+  end
+  return str:gsub("%[[%a%d/]*%]", "")
+end
+
 return m

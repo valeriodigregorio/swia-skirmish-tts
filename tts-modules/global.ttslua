@@ -4,6 +4,7 @@
 -- -----------------------------------------------------------------------------
 
 local DEFS = require("swia-skirmish-tts/modules/common/definitions")
+local COMP = require("swia-skirmish-tts/modules/common/components")
 local GLOBAL_UI = require("swia-skirmish-tts/modules/global/global_ui")
 
 local DeploymentCard = require("swia-skirmish-tts/modules/common/deployment_card")
@@ -28,22 +29,33 @@ local playAreasByZone = {
   ["bbca3f"] = playAreasByPlayer[DEFS.SECOND_PLAYER],
 }
 
-local Router = EventRouter:create()
+local Router = EventRouter:create("Global")
 
 -- -----------------------------------------------------------------------------
 -- Utilities
 -- -----------------------------------------------------------------------------
 
+local function getVisibleCardFromObject(object)
+  if not COMP.isCard(object) then
+    return nil
+  end
+  local card = DeploymentCard:create(object)
+  if card ~= nil and card:isVisible() then
+    return card
+  end
+  return nil
+end
+
 local History = {}
 
 function logEvent(eventType, object, zone)
-  local card = DeploymentCard:create(object)
-  if card ~= nil and card:isVisible() then
-    logger:debug({eventType, object, zone}, "logEvent")
+  local card = getVisibleCardFromObject(object)
+  logger:debug({eventType, card, zone}, "logEvent")
+  if card ~= nil then
     local history = History[object.getGUID()]
     if history == nil then
-       history = EventHistory:create(Router)
-       History[object.getGUID()] = history
+      history = EventHistory:create(Router)
+      History[object.getGUID()] = history
     end
     local area = nil
     if zone ~= nil then
@@ -58,13 +70,13 @@ end
 -- -----------------------------------------------------------------------------
 
 function onLoad(savedState)
-  debug(savedState, "Global:onLoad")
+  logger:debug({savedState}, "Global:onLoad")
   for guid, area in pairs(playAreasByZone) do
     Router:onDiceResultsUpdate(area, nil)
     local zone = getObjectFromGUID(guid)
     for _, object in ipairs(zone.getObjects() or {}) do
-      local card = DeploymentCard:create(object)
-      if card ~= nil and card:isVisible() then
+      local card = getVisibleCardFromObject(object)
+      if card ~= nil then
         Router:onCardEnterPlayArea(card, area)
       end
     end
@@ -78,18 +90,10 @@ end
 
 function onObjectDestroy(object)
   logger:debug({object}, "Global:onObjectDestroy")
-  for guid, area in pairs(playAreasByZone) do
-    local zone = getObjectFromGUID(guid)
-    if zone ~= nil then
-      for _, obj in ipairs(zone.getObjects() or {}) do
-        if obj.getGUID() == object.getGUID() then
-          local card = DeploymentCard:create(object)
-          if card ~= nil and card:isVisible() then
-            Router:onCardLeavePlayArea(object, area)
-          end
-          return
-        end
-      end
+  local card = getVisibleCardFromObject(object)
+  if card ~= nil then
+    for _, area in pairs(playAreasByPlayer) do
+      Router:onCardLeavePlayArea(card, area)
     end
   end
 end
@@ -157,10 +161,10 @@ function onDiceResultsUpdate(args)
   end
 end
 
-function waitCardAdded(card, area, callback)
-  debug(card, area, callback, "Global:waitCardAdded")
+function waitCardAdded(object, area, callback)
+  logger:debug({object, area, callback}, "Global:waitCardAdded")
   Wait.condition(callback, function()
-    return area:hasCard(card)
+    return area:getCard(object.getGUID()) ~= nil
   end)
 end
 
