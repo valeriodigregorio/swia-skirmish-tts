@@ -159,7 +159,7 @@ local DeploymentCards = {
   ["Headhunter"] = {health = -1, figures = 0, affiliation=DEFS.MERCENARY, system="FFG"},
   ["Hired Gun"] = {health = 3, figures = 2, affiliation=DEFS.MERCENARY, system="FFG"},
   ["Hondo Ohnaka"] = {health = 9, figures = 1, affiliation=DEFS.MERCENARY, system="FFG"},
-  ["IG-88"] = {health = 10, figures = 1, affiliation=DEFS.MERCENARY, system="FFG"},
+  ["IG-88"] = {health = 15, figures = 1, affiliation=DEFS.MERCENARY, system="FFG"},
   ["Indentured Jester"] = {health = nil, figures = 0, affiliation=DEFS.MERCENARY, system="FFG"},
   ["Jabba the Hutt"] = {health = 10, figures = 1, affiliation=DEFS.MERCENARY, system="FFG"},
   ["Jawa Scavenger"] = {health = 3, figures = 1, affiliation=DEFS.MERCENARY, system="FFG"},
@@ -265,7 +265,7 @@ local DeploymentCards = {
   ["Elite Dark Trooper Mk III - IACP"] = {health = 10, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
   ["Elite Dewback Rider - IACP"] = {health = 9, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
   ["Elite Snowtrooper - IACP"] = {health = 7, figures = 3, affiliation=DEFS.IMPERIAL, system="IACP"},
-  ["Moff Gideoon - IACP"] = {health = 10, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
+  ["Moff Gideon - IACP"] = {health = 12, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
   ["Elite Flametrooper - IACP"] = {health = 8, figures = 1, affiliation=DEFS.IMPERIAL, system="IACP"},
 
   -- IACP, Mercenary
