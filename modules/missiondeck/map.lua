@@ -1350,8 +1350,27 @@ local m = {
         },
         [5] = {
           type = "Mission Token",
-          position = {-15.76, 1.00, -7.06},
-          rotation = {0.00, 180.00, 0.00},
+          position = {19.44, 1.00, -12.34},
+          rotation = {0.00, 0.00, 0.00},
+          state = 4
+        },
+        [6] = {
+          type = "Mission Token",
+          position = {17.68, 1.00, -12.34},
+          rotation = {0.00, 0.00, 0.00},
+          state = 5
+        },
+        [7] = {
+          type = "Mission Token",
+          position = {-10.48, 1.00, -12.34},
+          rotation = {0.00, 0.00, 0.00},
+          state = 5
+        },
+        [8] = {
+          type = "Mission Token",
+          position = {-12.24, 1.00, -12.34},
+          rotation = {0.00, 0.00, 0.00},
+          state = 4
         }
       }
     },
@@ -1522,7 +1541,7 @@ local m = {
         [3] = {
           type = "Mission Token",
           position = {2.33, 1.00, 13.13},
-          rotation = {0.00, 90.00, 0.00}
+          rotation = {0.00, 0.00, 0.00}
         },
         [4] = {
           type = "Mission Token",
@@ -1542,7 +1561,7 @@ local m = {
         [7] = {
           type = "Mission Token",
           position = {4.08, 1.00, -13.13},
-          rotation = {0.00, 90.00, 0.00}
+          rotation = {0.00, 0.00, 0.00}
         },
         [8] = {
           type = "Mission Token",
@@ -1667,7 +1686,7 @@ local m = {
         [8] = {
           type = "Mission Token",
           position = {-6.15, 1.00, 5.20},
-          rotation = {0.00, 90.00, 0.00},
+          rotation = {0.00, 0.00, 0.00},
           state = 5
         },
         [9] = {
@@ -1777,7 +1796,112 @@ local m = {
   [49] = {
     guid = "bbdbf5",
     name = "Lothal Spaceport",
-    cards = {"Market Sabotage", "Mortar Fire"}
+    cards = {"Market Sabotage", "Mortar Fire"},
+    items = {
+      always = {
+        [1] = {
+          type = "Terminal",
+          position = {14.82, 1.00, 0.93},
+          rotation = {0.00, 0.00, 0.00}
+        },
+        [2] = {
+          type = "Terminal",
+          position = {-9.82, 1.00, -4.33},
+          rotation = {0.00, 0.00, 0.00}
+        },
+        [3] = {
+          type = "Door",
+          position = {-1.05, 1.00, 9.95},
+          rotation = {0.00, 270.00, 0.00}
+        },
+        [4] = {
+          type = "Door",
+          position = {4.29, 1.00, 2.77},
+          rotation = {0.00, 270.00, 0.00}
+        },
+        [5] = {
+          type = "Door",
+          position = {-2.82, 1.00, -0.71},
+          rotation = {0.00, 270.00, 0.00}
+        },
+        [6] = {
+          type = "Door",
+          position = {4.27, 1.00, -7.74},
+          rotation = {0.00, 270.00, 0.00}
+        },
+        [7] = {
+          type = "Crate",
+          position = {2.50, 1.00, 9.68},
+          rotation = {0.00, 0.00, 0.00}
+        },
+        [8] = {
+          type = "Crate",
+          position = {-4.54, 1.00, 2.68},
+          rotation = {0.00, 0.00, 0.00}
+        },
+        [9] = {
+          type = "Crate",
+          position = {2.50, 1.00, 0.93},
+          rotation = {0.00, 0.00, 0.00}
+        },
+        [10] = {
+          type = "Crate",
+          position = {7.78, 1.00, -2.58},
+          rotation = {0.00, 0.00, 0.00}
+        },
+        [11] = {
+          type = "Crate",
+          position = {2.50, 1.00, -7.83},
+          rotation = {0.00, 0.00, 0.00}
+        },
+        [12] = {
+          type = "Faction Token",
+          position = {-9.82, 1.00, 7.93},
+          rotation = {0.00, 180.00, 0.00},
+          state = 2
+        },
+        [13] = {
+          type = "Faction Token",
+          position = {14.82, 1.00, -7.83},
+          rotation = {0.00, 180.00, 0.00},
+          state = 1
+        },
+      },
+      [1] = {
+      },
+      [2] = {
+        [1] = {
+          type = "Mission Token",
+          position = {13.06, 1.00, 11.43},
+          rotation = {0.00, 0.00, 0.00},
+          state = 3
+        },
+        [2] = {
+          type = "Mission Token",
+          position = {13.06, 1.00, 13.18},
+          rotation = {0.00, 0.00, 0.00},
+          state = 4
+        },
+        [3] = {
+          type = "Mission Token",
+          position = {-8.06, 1.00, -11.33},
+          rotation = {0.00, 0.00, 0.00},
+          state = 2
+        },
+        [4] = {
+          type = "Mission Token",
+          position = {-8.06, 1.00, -13.08},
+          rotation = {0.00, 0.00, 0.00},
+          state = 4
+        }
+      }
+    },
+    grid = {
+      ["sizeX"] = 1.76,
+      ["sizeY"] = 1.75,
+      ["offsetX"] = 1.62,
+      ["offsetY"] = 0.05,
+    }
   },
   [50] = {
     guid = "c663b1",
