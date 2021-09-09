@@ -564,6 +564,7 @@ local cards = {
     [269] = "Honoring the Fallen - IACP",
     [270] = "Demoralizing Monologue - IACP",
     [271] = "Palace Politics - IACP",
+    [272] = "Assassinate - IACP",
   }
 }
 
