@@ -434,7 +434,7 @@ function DeploymentCard:getInfo(index)
   if n == nil or index > n then
     return {}
   end
-  infos = self:getAllInfo()
+  local infos = self:getAllInfo()
   return infos[index]
 end
 

@@ -48,7 +48,7 @@ end
 
 local History = {}
 
-function logEvent(eventType, object, zone)
+local function logEvent(eventType, object, zone)
   local card = getVisibleCardFromObject(object)
   logger:debug({eventType, card, zone}, "logEvent")
   if card ~= nil then
@@ -98,9 +98,9 @@ function onObjectDestroy(object)
   end
 end
 
-function onValueChanged(player, value, id)
-  logger:debug({player, value, id}, "Global:onValueChanged")
-  player, group, figure = GLOBAL_UI.splitId(id)
+function onValueChanged(player_no, value, id)
+  logger:debug({player_no, value, id}, "Global:onValueChanged")
+  local player, group, _ = GLOBAL_UI.splitId(id)
   local area = playAreasByPlayer[player]
   if area ~= nil and group ~= "" then
     if value == "True" then
@@ -111,9 +111,9 @@ function onValueChanged(player, value, id)
   end
 end
 
-function onButtonClick(player, button, id)
-  logger:debug({player, button, id}, "Global:onButtonClick")
-  player, group, figure = GLOBAL_UI.splitId(id)
+function onButtonClick(player_no, button, id)
+  logger:debug({player_no, button, id}, "Global:onButtonClick")
+  local player, group, figure = GLOBAL_UI.splitId(id)
   local area = playAreasByPlayer[player]
   if area ~= nil and group ~= "" and figure ~= "" then
     if button == "-1" then

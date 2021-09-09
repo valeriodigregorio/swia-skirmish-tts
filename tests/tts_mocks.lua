@@ -132,3 +132,9 @@ function Object:create(name, description, tag)
     obj.getTag = function() return tag end
     return obj
 end
+
+-- -----------------------------------------------------------------------------
+-- Grid
+-- -----------------------------------------------------------------------------
+
+Grids = {}
