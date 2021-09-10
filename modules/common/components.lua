@@ -36,7 +36,7 @@ local function handleTemporaryAllianceCard(name, description)
 end
 
 local function handleIACPCard(name, description)
-  if string.match(description, IACP_CARD_TAG) then
+  if string.match(description or "", IACP_CARD_TAG) then
     name = name:gsub(" %- "..IACP_CARD_TAG, "")
     return name.." - "..IACP_CARD_TAG
   end
@@ -95,17 +95,18 @@ function m.getCardDescription(object)
   for _, line in ipairs(lines) do
     local n = string.match(line, "(%d*) HP")
     if n == nil then
-      return line
+      return line or ""
     end
     break
   end
+  return ""
 end
 
 function m.getDeploymentCardId(object)
   local name = STRING.cleanupCodes(UTILS.safeGetName(object))
   local description = STRING.cleanupCodes(m.getCardDescription(object))
   for _, handle in ipairs(DeploymentCardHandles) do
-    name = handle(name, description)
+    name = handle(name, description or "")
   end
   return name
 end
@@ -114,7 +115,7 @@ function m.getCommandCardId(object)
   local name = STRING.cleanupCodes(UTILS.safeGetName(object))
   local description = STRING.cleanupCodes(m.getCardDescription(object))
   for _, handle in ipairs(CommandCardHandles) do
-    name = handle(name, description)
+    name = handle(name, description or "")
   end
   return name
 end

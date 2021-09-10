@@ -14,9 +14,9 @@ end
 
 function m.safeGetDescription(object)
     if object.getDescription ~= nil then
-        return object.getDescription()
+        return object.getDescription() or ""
     end
-    return object.description
+    return object.description or ""
 end
 
 function m.clone_array(array)
