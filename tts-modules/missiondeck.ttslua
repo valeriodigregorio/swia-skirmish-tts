@@ -140,7 +140,6 @@ function onLoad()
   logger:debug({}, "onLoad")
   local _, map = mapBoard:getCurrentMap()
   local state = mapBoard:getState(map)
-  clearObjects()
   setGridState(state)
 end
 

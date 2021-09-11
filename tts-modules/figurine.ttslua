@@ -1,0 +1,249 @@
+-- -----------------------------------------------------------------------------
+-- Star Wars: Imperial Assault - Skirmish
+-- by Ikon
+-- -----------------------------------------------------------------------------
+
+local DEFS = require("swia-skirmish-tts/modules/common/definitions")
+
+local Overlay = require("swia-skirmish-tts/modules/figurine/overlay")
+
+local Logger = require("swia-skirmish-tts/modules/common/logger")
+local logger = Logger:create("figurine", "Blue"):setState(false)
+
+-- -----------------------------------------------------------------------------
+-- Constants
+-- -----------------------------------------------------------------------------
+
+local PresetHeight = {
+
+    -- Rebel
+    ["Wookiee Warrior"] = 300,
+    ["[DA1917]Echo Base Trooper"] = 325,
+    ["[DA1917]Ezra Bridger"] = 350,
+    ["[DA1917]Obi-Wan Kenobi"] = 300,
+    ["[DA1917]Sabine Wren"] = 300,
+    ["Diala Passil"] = 350,
+    ["CT-1701"] = 300,
+    ["[DA1917]Rebel Saboteur"] = 300,
+    ["Ko-Tun Feralo"] = 325,
+    ["[DA1917]Lando Calrissian"] = 325,
+    ["Saska Teft"] = 300,
+    ["Davith Elso"] = 300,
+    ["Rebel Trooper"] = 325,
+    ["Jarrod Kelvin"] = 300,
+    ["Echo Base Trooper"] = 325,
+    ["MHD-19"] = 300,
+    ["Jyn Odan"] = 250,
+    ["Tress Hacnua"] = 300,
+    ["[DA1917]Han Solo"] = 300,
+    ["Rebel Saboteur"] = 300,
+    ["[DA1917]Chewbacca"] = 350,
+    ["[DA1917]Luke Skywalker (Jedi)"] = 300,
+    ["[DA1917]Wookiee Warrior"] = 300,
+    ["[DA1917]Alliance Ranger"] = 275,
+    ["[DA1917]Luke Skywalker"] = 300,
+    ["Biv Bodhrik"] = 325,
+    ["Drokkatta"] = 300,
+    ["Fenn Signis"] = 300,
+    ["Alliance Ranger"] = 275,
+    ["[DA1917]Rebel Trooper"] = 325,
+    ["[DA1917]Leia Organa"] = 350,
+    ["[DA1917]Kanan Jarrus"] = 375,
+    ["[DA1917]Ahsoka Tano"] = 300,
+    ["Gaarkhan"] = 425,
+    ["Verena Talos"] = 300,
+    ["[DA1917]Zeb Orrelios"] = 325,
+    ["[DA1917]Hera Syndulla"] = 300,
+    ["Loku Kanoloa"] = 325,
+    ["Murne Rin"] = 300,
+    ["[DA1917]Alliance Smuggler"] = 300,
+    ["[DA1917]R2-D2"] = 275,
+    ["[DA1917]C1-10P"] = 275,
+    ["Gideon Argus"] = 300,
+    ["Mak Eshka'rey"] = 300,
+    ["[DA1917]C-3PO"] = 325,
+    ["Alliance Smuggler"] = 300,
+
+    -- Imperial
+    ["[DA1917]Darth Vader"] = 375,
+    ["[DA1917]General Weiss"] = 700,
+    ["[DA1917]AT-ST"] = 700,
+    ["[DA1917]Royal Guard Champion"] = 375,
+    ["[DA1917]Royal Guard"] = 375,
+    ["[DA1917]SC2-M Repulsor tank"] = 325,
+    ["[DA1917]Sentry Droid"] = 325,
+    ["[DA1917]Kayn Somos"] = 325,
+    ["[DA1917]Snowtrooper"] = 325,
+    ["[DA1917]The Grand Inquisitor"] = 300,
+    ["[DA1917]AT-DP"] = 700,
+    ["[DA1917]General Sorin"] = 375,
+    ["[DA1917]Stormtrooper"] = 300,
+    ["[DA1917]Emperor Palpatine"] = 300,
+    ["Royal Guard"] = 375,
+    ["[DA1917]Heavy Stormtrooper"] = 325,
+    ["[DA1917]E-Web Engineer"] = 325,
+    ["[DA1917]Captain Terro"] = 375,
+    ["[DA1917]ISB Infiltrator"] = 325,
+    ["[DA1917]Jet Trooper"] = 375,
+    ["[DA1917]Agent Blaise"] = 325,
+    ["[DA1917]Riot Trooper"] = 300,
+    ["Snowtrooper"] = 325,
+    ["[DA1917]BT-1"] = 300,
+    ["[DA1917]Thrawn"] = 300,
+    ["E-Web Engineer"] = 325,
+    ["Sentry Droid"] = 325,
+    ["Heavy Stormtrooper"] = 325,
+    ["Stormtrooper"] = 300,
+    ["[DA1917]Dewback Rider"] = 375,
+    ["[DA1917]Imperial Officer"] = 325,
+    ["[DA1917]Probe Droid"] = 375,
+    ["ISB Infiltrator"] = 325,
+    ["Riot Trooper"] = 300,
+    ["[DA1917]0-0-0"] = 300,
+    ["Jet Trooper"] = 375,
+    ["Death Trooper"] = 300,
+    ["Imperial Officer"] = 325,
+    ["Probe Droid"] = 375,
+    ["[DA1917]Death Trooper"] = 300,
+
+    -- Mercenary
+    ["[DA1917]Boba Fett"] = 375,
+    ["[DA1917]IG-88"] = 375,
+    ["[DA1917]HK Assassin Droid"] = 375,
+    ["[DA1917]Trandoshan Hunter"] = 325,
+    ["[DA1917]Bantha Rider"] = 425,
+    ["[DA1917]Wing Guard"] = 325,
+    ["[DA1917]Bossk"] = 350,
+    ["[DA1917]Gamorrean Guard"] = 275,
+    ["Shyla Varad"] = 300,
+    ["[DA1917]Dengar"] = 375,
+    ["[DA1917]Wampa"] = 375,
+    ["HK Assassin Droid"] = 325,
+    ["[DA1917]Maul"] = 300,
+    ["[DA1917]Rancor"] = 525,
+    ["[DA1917]Tusken Raider"] = 325,
+    ["[DA1917]Weequay Pirate"] = 300,
+    ["Trandoshan Hunter"] = 325,
+    ["[DA1917]Jabba the Hutt"] = 225,
+    ["[DA1917]Hondo Ohnaka"] = 325,
+    ["Onar Koma"] = 350,
+    ["[DA1917]Hired Guns"] = 350,
+    ["[DA1917]Loth-cat"] = 275,
+    ["[DA1917]Nexu"] = 375,
+    ["Gamorrean Guard"] = 275,
+    ["[DA1917]Clawdite Shapeshifter"] = 300,
+    ["Wing Guard"] = 325,
+    ["Vinto Hreeda"] = 300,
+    ["[DA1917]Ugnaught Tinkerer"] = 275,
+    ["Tusken Raider"] = 325,
+    ["Wampa"] = 375,
+    ["Weequay Pirate"] = 300,
+    ["[DA1917]Greedo"] = 325,
+    ["Clawdite Shapeshifter"] = 300,
+    ["Hired Guns"] = 350,
+    ["Loth-cat"] = 275,
+    ["Nexu"] = 370,
+    ["[DA1917]Jawa Scavenger"] = 275,
+    ["Ugnaught Tinkerer"] = 250,
+    ["Jawa Scavenger"] = 275,
+
+    -- Companion
+    ["[E6E42B]Junk Droid"] = 150,
+    ["[E6E42B]Salacious B. Crumb"] = 150,
+    ["[E6E42B]J4X-7"] = 150,
+
+    -- IACP
+    ["[DA1917]Yoda"] = 275,
+    ["[DA1917]AT-RT"] = 200,
+    ["[DA1917]Rebel Pathfinder"] = 300,
+    ["[DA1917]K-2SO"] = 350,
+    ["[DA1917]Jyn Erso"] = 300,
+    ["[DA1917]Cassian Andor"] = 325,
+    ["[DA1917]Director Krennic"] = 325,
+    ["[DA1917]Scout Trooper"] = 300,
+    ["[DA1917]Shoretrooper"] = 300,
+    ["[DA1917]Mortar Trooper"] = 175,
+    ["[DA1917]The Mandalorian"] = 350,
+    ["[DA1917]IG-11"] = 375,
+    ["[DA1917]Zuckuss"] = 275,
+    ["[DA1917]4-LOM"] = 325,
+
+    -- IACP Companion
+    ["[E6E42B]The Child"] = 150,
+    ["[E6E42B]\"Dio\""] = 150,
+}
+
+local SYMBOL_WIDTH = 400
+
+-- -----------------------------------------------------------------------------
+-- Utilities
+-- -----------------------------------------------------------------------------
+
+local function toOverlaySymbol(object)
+    local result = nil
+    local symbol = DEFS.getPowerToken(object)
+    if symbol ~= nil then
+        result = Overlay[symbol:upper()]
+    else
+        symbol = DEFS.getCondition(object)
+        if symbol ~= nil then
+            result = Overlay[symbol:upper()]
+        else
+            if DEFS.isReconToken(object) then
+                result = Overlay.RECON
+            end
+        end
+    end
+    logger:debug({object, result}, "toOverlaySymbol")
+    return result
+end
+
+local function refresh(object, overlay)
+    logger:debug({object, overlay}, "refresh")
+    overlay:apply(object, PresetHeight[object.getName()], SYMBOL_WIDTH)
+end
+
+-- -----------------------------------------------------------------------------
+-- UI Events
+-- -----------------------------------------------------------------------------
+
+local current_overlay = nil
+
+function onLoad(save_state)
+    logger:debug({save_state}, "onLoad")
+    current_overlay = Overlay:create(save_state)
+    refresh(self, current_overlay)
+end
+
+function onSave()
+    self.script_state = current_overlay:toJson()
+end
+
+function onClick(_, _, symbol)
+    logger:debug({symbol}, "onClick")
+    if symbol ~= nil and current_overlay:remove(symbol) then
+        refresh(self, current_overlay)
+    end
+end
+
+function onCollisionEnter(info)
+    logger:debug({info}, "onCollisionEnter")
+    if current_overlay ~= nil then
+        local symbol = toOverlaySymbol(info.collision_object)
+        if symbol ~= nil and current_overlay:add(symbol) then
+            destroyObject(info.collision_object)
+        end
+        refresh(self, current_overlay)
+    end
+end
+
+function onRotate(spin, flip, player_color, old_spin, old_flip)
+    logger:debug({spin, flip, player_color, old_spin, old_flip}, "onRotate")
+    local object = self
+    Wait.condition(function()
+        return object == nil and object.resting
+    end,
+    function()
+        refresh(object, current_overlay)
+    end)
+end

@@ -17,9 +17,9 @@ local logger = Logger:create("dice_tray", "Pink"):setState(false)
 
 local function isAllowed(object)
   return COMP.isDie(object)
-      or COMP.isPowerToken(object)
-      or COMP.isHiddenCondition(object)
-      or COMP.isWeakenedCondition(object)
+      or DEFS.isPowerToken(object)
+      or DEFS.isCondition(object, DEFS.HIDDEN)
+      or DEFS.isCondition(object, DEFS.WEAKENED)
 end
 
 local function sumResults(r1, r2)
@@ -32,15 +32,16 @@ end
 local function calculateResults(objects)
   local results = {}
   for _, object in pairs(objects) do
+    logger:debug({object}, "DiceTray:calculateResults")
     if COMP.isDie(object) then
       local r = COMP.getDieResults(object)
       results = sumResults(results, r)
-    elseif COMP.isHiddenCondition(object) then
+    elseif DEFS.isCondition(object, DEFS.HIDDEN) then
       results[DEFS.ACCURACY] = (results[DEFS.ACCURACY] or 0) - 2
-    elseif COMP.isWeakenedCondition(object) then
+    elseif DEFS.isCondition(object, DEFS.WEAKENED) then
       results[DEFS.SURGE] = (results[DEFS.SURGE] or 0) - 1
       results[DEFS.EVADE] = (results[DEFS.EVADE] or 0) - 1
-    elseif COMP.isPowerToken(object) then
+    elseif DEFS.isPowerToken(object) then
       local description = UTILS.safeGetDescription(object)
       results[description] = (results[description] or 0) + 1
     end

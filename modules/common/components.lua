@@ -4,6 +4,7 @@
 -- -----------------------------------------------------------------------------
 
 local UTILS = require("swia-skirmish-tts/modules/common/utils")
+local DEFS = require("swia-skirmish-tts/modules/common/definitions")
 local STRING = require("swia-skirmish-tts/modules/common/string")
 
 local m = {}
@@ -143,6 +144,13 @@ function m.getFigureId(object)
   return name
 end
 
+function m.isFigure(object)
+  return object.type == "Figurine"
+     and UTILS.safeGetName(object):match("Crate") == nil
+     and UTILS.safeGetName(object):match("Terminal") == nil
+     and UTILS.safeGetName(object):match("Door") == nil
+end
+
 -- -----------------------------------------------------------------------------
 --  Dice
 -- -----------------------------------------------------------------------------
@@ -152,37 +160,16 @@ function m.isDie(object)
 end
 
 function m.getDieResults(object)
-  local results = {
-    ['Damage'] = 0,
-    ['Surge'] = 0,
-    ['Accuracy'] = 0,
-    ['Block'] = 0,
-    ['Evade'] = 0,
-    ['Dodge'] = 0,
-  }
+  local results = {}
+  for _, result in pairs(DEFS.DICE_RESULTS) do
+    results[result] = 0
+  end
   local side = object.getValue()
   local result = object.getRotationValues()[side].value
   for n, attribute in string.gmatch(result, '(%d)%s(%a*)') do
     results[attribute] = results[attribute] + n
   end
   return results
-end
-
--- -----------------------------------------------------------------------------
---  Tokens
--- -----------------------------------------------------------------------------
-
-function m.isHiddenCondition(object)
-  return UTILS.safeGetName(object) == "Hidden"
-end
-
-function m.isWeakenedCondition(object)
-  return UTILS.safeGetName(object) == "Weakened"
-end
-
-function m.isPowerToken(object)
-  local name = UTILS.safeGetName(object)
-  return string.match(name, "Power Token") ~= nil
 end
 
 return m

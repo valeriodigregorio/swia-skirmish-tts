@@ -23,6 +23,21 @@ end
 -- UI
 -- -----------------------------------------------------------------------------
 
+local json = require("JSON")
+JSON = {}
+
+function JSON.encode(lua_data)
+    return json:encode(lua_data)
+end
+
+function JSON.decode(json_string)
+    return json:decode(json_string)
+end
+
+-- -----------------------------------------------------------------------------
+-- UI
+-- -----------------------------------------------------------------------------
+
 UI = {}
 UI.attributes = {}
 
@@ -121,7 +136,7 @@ end
 Object = {}
 Object.__index = Object
 
-function Object:create(name, description, tag)
+function Object:create(name, description, tag, position, rotation)
     local obj = {}
     setmetatable(obj, Object)
     obj.name = name
@@ -129,7 +144,13 @@ function Object:create(name, description, tag)
     obj.tag = tag
     obj.getName = function() return name end
     obj.getDescription = function() return description end
+    obj.getPosition = function() return position or {x=0.0, y=0.0, z=0.0} end
+    obj.getRotation = function() return rotation or {x=0.0, y=0.0, z=0.0} end
     obj.getTag = function() return tag end
+    obj.UI = {}
+    obj.UI.setXml = function(xml)
+        obj.xml = xml
+    end
     return obj
 end
 
