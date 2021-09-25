@@ -222,6 +222,9 @@ end
 
 function m.getPowerToken(object)
     local name = UTILS.safeGetName(object)
+    if string.match(name, " Power Token") == nil then
+        return nil
+    end
     name = name:gsub(" Power Token", "")
     return POWER_TOKENS_LOOKUP[name]
 end
