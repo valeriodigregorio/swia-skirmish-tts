@@ -241,9 +241,9 @@ function onRotate(spin, flip, player_color, old_spin, old_flip)
     logger:debug({spin, flip, player_color, old_spin, old_flip}, "onRotate")
     local object = self
     Wait.condition(function()
-        return object == nil and object.resting
+        refresh(object, current_overlay)
     end,
     function()
-        refresh(object, current_overlay)
+        return object == nil and object.resting
     end)
 end
